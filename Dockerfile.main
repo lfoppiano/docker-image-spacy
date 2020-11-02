@@ -1,0 +1,17 @@
+# [START docker]
+FROM test/wheels/build  
+# [END docker]
+
+# [START configure app env]
+WORKDIR /app
+
+RUN while read p; \  
+    do /env/bin/pip install --no-index -f /wheelhouse $p; \
+    done < requirements.txt
+ADD . /app  
+# [END configure app env]
+
+EXPOSE 8080  
+CMD []# [START Application Definition]
+ENTRYPOINT ["/env/bin/python", "/app/wsgi.py"]  
+# [END Application Definition]

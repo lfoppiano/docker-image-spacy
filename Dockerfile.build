@@ -1,0 +1,33 @@
+# [START docker]
+FROM python:3.7-buster
+# [END docker]
+
+# [START system dependencies]
+RUN apt-get update 
+RUN apt-get install -y \  
+    libpng-dev \
+    freetype* \
+    libblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    gfortran
+RUN pip3 install virtualenv
+# [END system dependencies]
+
+# [START app environment]
+WORKDIR /app  
+ADD requirements.txt /app/requirements.txt  
+RUN virtualenv /env  
+RUN /env/bin/pip install --upgrade pip  
+# [END app environment]
+
+# [START install & configure wheel]
+RUN /env/bin/pip install wheel  
+ENV PIP_WHEEL_DIR=/wheelhouse  
+ENV WHEELHOUSE=/wheelhouse  
+ENV PIP_FIND_LINKS=/wheelhouse  
+
+# [START install & configure wheel]
+RUN while read p; do /env/bin/pip wheel $p; done < requirements.txt
+
+
